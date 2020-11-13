@@ -15,7 +15,7 @@ int main() {
 ```
 
 ```sh
-$ cppmm main.cpp -o main.c
+$ c++-- main.cpp -o main.c
 $ gcc main.c -o main -lstdc++
 $ ./main
 Hello, World!
