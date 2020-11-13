@@ -8,7 +8,7 @@ authors = ["Kevin Orr <kevinorr54@gmail.com>"]
 cppmm = "cppmm.__main__:main"
 
 [tool.poetry.dependencies]
-python = "^3.6"
+python = "^3.7"
 click = "^7.0"
 
 [tool.poetry.dev-dependencies]
