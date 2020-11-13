@@ -2,6 +2,7 @@
 .idea
 *.log
 
+*.o
 *.py[cod]
 *.egg
 __pycache__/

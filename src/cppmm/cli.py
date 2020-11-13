@@ -11,32 +11,54 @@ import cppmm
 
 @click.command(context_settings={'ignore_unknown_options': True},
                help='C++ compiler that uses C++-- as a frontened, and GCC as a backend')
-@click.option('-o', 'outfile', metavar='OUTFILE', type=click.Path(), default='a.out',
-              help='Output file')
-@click.option('--c++---option', 'cppmm_option', metavar='OPTION', multiple=True, type=str,
-              help='Argument to be passed to c++--. Can be used more than once')
-@click.option('--gcc-option', 'gcc_option', metavar='OPTION', multiple=True, type=str,
-              help='Argument to be passed to gcc. Can be used more than once')
-@click.argument('infiles', nargs=-1, type=click.Path(exists=True, readable=True))
-def compile(infiles: List[Path], outfile: Path, cppmm_option: List[str], gcc_option: List[str]):
-    if not infiles:
-        return
+@click.argument('arguments', nargs=-1)
+def compile(arguments):
+    cppmm_options: List[str] = []
+    skip = 0
+    for opt in arguments:
+        if skip > 0:
+            skip -= 1
+            continue
 
-    objects = []
+        if opt == '-o':
+            skip = 1
+            continue
 
-    for infile in infiles:
-        if not any(infile.lower().endswith(suffix) for suffix in ('.cc', '.cp', '.cxx', '.cpp', '.c++')):
-            objects.append(infile)
-        else:
-            cfile = Path(infile).stem + '.c'
+        elif opt.startswith('-'):
+            cppmm_options.append(opt)
+
+        # Absolutely inelegant hack, because I don't feel like learning and
+        # specifying ALL of gcc's options
+        elif not any(opt.lower().endswith(suffix) for suffix in
+                     ('.cc', '.cp', '.cxx', '.cpp', '.c++', '.c', '.i', '.ii', '.s', '.o')):
+            cppmm_options.append(opt)
+
+
+    gcc_args: List[str] = []
+    skip = 0
+    for opt1, opt2 in zip(arguments, arguments[1:] + (None,)):
+        if skip > 0:
+            skip -= 1
+            continue
+
+        if opt1 == '-o':
+            gcc_args += [opt1, opt2]
+            skip = 1
+            continue
+
+        elif any(opt1.lower().endswith(suffix) for suffix in ('.cc', '.cp', '.cxx', '.cpp', '.c++', '.ii')):
+            cfile = Path(opt1).stem + '.c'
             cppmm.transpile(
-                [Path(infile)],
+                [Path(opt1)],
                 Path(cfile),
-                cppmm_option
+                cppmm_options
             )
-            objects.append(cfile)
+            gcc_args.append(cfile)
 
-    subprocess.check_call(['gcc', *gcc_option, '-o', str(outfile), *map(str, objects), '-lstdc++'])
+        else:
+            gcc_args.append(opt1)
+
+    subprocess.check_call(['gcc', *gcc_args, '-lstdc++'])
 
 
 @click.command(context_settings={'ignore_unknown_options': True},
