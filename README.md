@@ -1,3 +1,5 @@
+![Tests](https://github.com/KevOrr/Cpp--/workflows/Tests/badge.svg)
+
 # C++--
 
 C++ to C transpiler
