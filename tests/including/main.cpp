@@ -1,6 +1,6 @@
 #include <iostream>
 
-#include "a.hpp"
+#include "lib.hpp"
 
 int main(int argc, char *argv[]) {
     if (argc < 2) {
