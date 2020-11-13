@@ -30,7 +30,7 @@ def compile(arguments):
         # Absolutely inelegant hack, because I don't feel like learning and
         # specifying ALL of gcc's options
         elif not any(opt.lower().endswith(suffix) for suffix in
-                     ('.cc', '.cp', '.cxx', '.cpp', '.c++', '.c', '.i', '.ii', '.s', '.o')):
+                     ('.cc', '.cp', '.cxx', '.cpp', '.c++', '.c', '.i', '.ii', '.s')):
             cppmm_options.append(opt)
 
 
@@ -55,10 +55,41 @@ def compile(arguments):
             )
             gcc_args.append(cfile)
 
+        elif opt1.startswith('-std'):
+            if opt1 == '-std':
+                std = opt2
+                skip = 1
+            else:
+                std = opt1.partition('=')[2]
+
+            translation = {
+                'c++98': 'c11',
+                'c++03': 'c11',
+                'gnu++98': 'gnu11',
+                'gnu++03': 'gnu11',
+                'c++11': 'c11',
+                'c++0x': 'c11',
+                'gnu++11': 'gnu11',
+                'gnu++0x': 'gnu11',
+                'c++14': 'c11',
+                'c++1y': 'c11',
+                'gnu++14': 'gnu11',
+                'gnu++1y': 'gnu11',
+                'c++17': 'c17',
+                'c++1z': 'c17',
+                'gnu++17': 'gnu17',
+                'gnu++1z': 'gnu17',
+                'c++20': 'gnu2x',
+                'c++2a': 'gnu2x',
+                'gnu++20': 'gnu2x',
+                'gnu++2a': 'gnu2x',
+            }
+            gcc_args.append('-std=' + translation.get(std, 'gnu17'))
+
         else:
             gcc_args.append(opt1)
 
-    subprocess.check_call(['gcc', *gcc_args, '-lstdc++'])
+    subprocess.check_call(['gcc', *gcc_args, '-lstdc++', '-lm'])
 
 
 @click.command(context_settings={'ignore_unknown_options': True},
