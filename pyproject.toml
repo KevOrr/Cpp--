@@ -5,7 +5,8 @@ description = "A C++ to C transpiler"
 authors = ["Kevin Orr <kevinorr54@gmail.com>"]
 
 [tool.poetry.scripts]
-cppmm = "cppmm.__main__:main"
+"c++--" = "cppmm.cli:transpile"
+"c++--cc" = "cppmm.cli:compile"
 
 [tool.poetry.dependencies]
 python = "^3.7"

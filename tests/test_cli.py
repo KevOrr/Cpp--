@@ -9,14 +9,14 @@ import re
 TEST_DIR = Path(__file__).parent
 
 def test_hello_world(tmp_path):
-    subprocess.check_call(['cppmm', '-o', str(tmp_path/'main.c'), str(TEST_DIR/'hello_world/main.cpp')])
+    subprocess.check_call(['c++--', '-o', str(tmp_path/'main.c'), str(TEST_DIR/'hello_world/main.cpp')])
     subprocess.check_call(['gcc', '-o', str(tmp_path/'a.out'), str(tmp_path/'main.c'), '-lstdc++'])
     assert subprocess.check_output([str(tmp_path/'a.out')], text=True) \
         == 'Hello, world!\n'
 
 def test_including(tmp_path):
-    subprocess.check_call(['cppmm', '-o', str(tmp_path/'lib.c'), str(TEST_DIR/'including/lib.cpp')])
-    subprocess.check_call(['cppmm', '-o', str(tmp_path/'main.c'), str(TEST_DIR/'including/main.cpp')])
+    subprocess.check_call(['c++--', '-o', str(tmp_path/'lib.c'), str(TEST_DIR/'including/lib.cpp')])
+    subprocess.check_call(['c++--', '-o', str(tmp_path/'main.c'), str(TEST_DIR/'including/main.cpp')])
     subprocess.check_call(['gcc', '-o', str(tmp_path/'a.out'),
                            str(tmp_path/'lib.c'), str(tmp_path/'main.c'),
                            '-lstdc++'])
@@ -31,7 +31,7 @@ def test_including(tmp_path):
         == 'turhgrewqfdsa\n'
 
 def test_library(tmp_path):
-    subprocess.check_call(['cppmm', '-o', str(tmp_path/'lib.c'), str(TEST_DIR/'library/lib.cpp')])
+    subprocess.check_call(['c++--', '-o', str(tmp_path/'lib.c'), str(TEST_DIR/'library/lib.cpp')])
     subprocess.check_call(['gcc', '-o', str(tmp_path/'a.out'),
                            str(tmp_path/'lib.c'), str(TEST_DIR/'library/main.c'),
                            '-lstdc++'])
@@ -46,7 +46,7 @@ def test_library(tmp_path):
         == 'turhgrewqfdsa\n'
 
 def test_exception(tmp_path):
-    subprocess.check_call(['cppmm', '-o', str(tmp_path/'lib.c'), str(TEST_DIR/'exception/lib.cpp')])
+    subprocess.check_call(['c++--', '-o', str(tmp_path/'lib.c'), str(TEST_DIR/'exception/lib.cpp')])
     subprocess.check_call(['gcc', '-o', str(tmp_path/'a.out'),
                            str(tmp_path/'lib.c'), str(TEST_DIR/'exception/main.c'),
                            '-lstdc++'])

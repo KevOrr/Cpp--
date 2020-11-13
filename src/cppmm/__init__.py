@@ -48,11 +48,11 @@ def cstr_literal_lines(s: bytes) -> List[str]:
     return [cstr_literal(line) for line in lines if line]
 
 
-def transpile(sources: List[Path], dest: Path, gcc_options: List[str]):
+def transpile(sources: List[Path], dest: Path, gpp_options: List[str]):
     fd, tmpout = tempfile.mkstemp(suffix='.s')
     os.close(fd)
 
-    cmd = ['g++', '-S', *gcc_options, '-o', tmpout, *map(str, sources)]
+    cmd = ['g++', '-S', *gpp_options, '-o', tmpout, *map(str, sources)]
     subprocess.check_call(cmd)
 
     with open(tmpout, 'rb') as f:
