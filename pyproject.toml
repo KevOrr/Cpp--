@@ -1,0 +1,19 @@
+[tool.poetry]
+name = "cppmm"
+version = "0.1.0"
+description = "A C++ to C transpiler"
+authors = ["Kevin Orr <kevinorr54@gmail.com>"]
+
+[tool.poetry.scripts]
+cppmm = "cppmm.__main__:main"
+
+[tool.poetry.dependencies]
+python = "^3.6"
+click = "^7.0"
+
+[tool.poetry.dev-dependencies]
+pytest = "^6.0"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
