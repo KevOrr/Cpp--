@@ -2,6 +2,8 @@ from typing import List
 from pathlib import Path
 import subprocess
 import sys
+import os
+import tempfile
 
 def cstr_literal(s: bytes) -> str:
     '''
@@ -33,13 +35,16 @@ def cstr_literal(s: bytes) -> str:
 
 
 def transpile(sources: List[Path], dest: Path, gcc_options: List[str]):
-    cmd = ['g++', '-S', *gcc_options, '-o', '/dev/stdout', *map(str, sources)]
-    p = subprocess.Popen(cmd, stdout=subprocess.PIPE)
-    assembly: bytes = p.stdout.read()  # type: ignore  # dumb type error
+    fd, tmpout = tempfile.mkstemp(suffix='.s')
+    os.close(fd)
 
-    if p.wait() != 0:
-        print('cppmm: error when running g++', file=sys.stderr)
-        exit(1)
+    cmd = ['g++', '-S', *gcc_options, '-o', tmpout, *map(str, sources)]
+    subprocess.check_call(cmd)
+
+    with open(tmpout, 'rb') as f:
+        assembly: bytes = f.read()
+
+    os.remove(tmpout)
 
     with open(dest, 'w') as f:
         f.write(f'__asm({cstr_literal(assembly)});\n')
