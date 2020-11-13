@@ -3,6 +3,6 @@
 
 #include <string>
 
-std::string reverse(const std::string);
+std::string reverse(std::string);
 
 #endif // __A_H_
