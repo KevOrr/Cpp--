@@ -34,6 +34,20 @@ def cstr_literal(s: bytes) -> str:
     return f'"{c_str}"'
 
 
+def cstr_literal_lines(s: bytes) -> List[str]:
+    '''
+    Encode any `bytes` as a list of C string literals which are meant to be
+    juxtaposed/concatenated
+    '''
+
+    lines = s.split(b'\n')
+    if not lines:
+        return []
+
+    lines[:-1] = [line + b'\n' for line in lines[:-1]]
+    return [cstr_literal(line) for line in lines if line]
+
+
 def transpile(sources: List[Path], dest: Path, gcc_options: List[str]):
     fd, tmpout = tempfile.mkstemp(suffix='.s')
     os.close(fd)
@@ -46,5 +60,7 @@ def transpile(sources: List[Path], dest: Path, gcc_options: List[str]):
 
     os.remove(tmpout)
 
+    lines = [' '*4 + (' '*4 if line.startswith(r'"\t') else '') + line for line in cstr_literal_lines(assembly)]
+
     with open(dest, 'w') as f:
-        f.write(f'__asm({cstr_literal(assembly)});\n')
+        f.write('__asm(\n' + '\n'.join(lines) + '\n);\n')
