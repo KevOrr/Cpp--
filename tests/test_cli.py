@@ -4,6 +4,7 @@ import pytest
 
 import subprocess
 from pathlib import Path
+import re
 
 TEST_DIR = Path(__file__).parent
 
@@ -59,7 +60,8 @@ def test_exception(tmp_path):
     p = subprocess.Popen([str(tmp_path/'a.out'), 'asdf', '1'], text=True, stderr=subprocess.PIPE)
     stderr = p.stderr.read()
     ret = p.wait()
-    assert stderr == "terminate called after throwing an instance of 'int'\n"
+    assert stderr == "terminate called after throwing an instance of 'int'\n" or \
+        re.search(r'\bterminat.*\bint\b', stderr)
     assert ret != 0
 
     assert subprocess.check_output([str(tmp_path/'a.out'), 'asdfqwerghrut', '0'], text=True) \
