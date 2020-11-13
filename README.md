@@ -21,17 +21,22 @@ Hello, World!
 
 ## Proof of correctness
 
-- DEFINITION CPP ::= all valid C++ programs
-- DEFINITION C ::= all valid C programs
-- DEFINITION sem_eq (p1 : CPP) (p2 : C) ::= if p1 and p2 are semantically equivalent then True else False
-- DEFINITION $[[c]]$ means transforming the CPP program c using this script
+Let
 
-- ASSUME This script can't possibly work (i.e. $\forall (p : \textrm{CPP}), \neg \textrm{sem_eq}~p~[[p]]$)
-- ASSUME It works for the trivial input below (i.e. ∃ (p : CPP), sem_eq p [[p]])
+- CPP ::= all valid C++ programs
+- C ::= all valid C programs
+- (p1 : CPP) ≅ (p2 : C) ::= `p1` and `p2` are semantically equivalent
+- [[p : CPP]] : C ::= the interpretation of `p` under C++--
 
-| ¬sem_eq p1 [[p1]] -> (sem_eq p1 [[p1]] -> ∀ (p : CPP), sem_eq p [[p]]) | by Principal of Explosion          |
-| ¬sem_eq p1 [[p1]]                                                      | by assumption 1 and ∀-elim         |
-|  sem_eq p1 [[p1]] -> ∀ (p : CPP), sem_eq p [[p]]                       | by (1), (2), Modus Ponens          |
-| (∃ (p1 : CPP), sem_eq p1 [[p1]]) -> ∀ (p : CPP), sem_eq p [[p]]        | by (3) and ∃-elim                  |
-| (∃ (p : CPP), sem_eq p [[p]]) -> ∀ (p : CPP), sem_eq p [[p]]           | by (4) and ɑ-equiv                 |
-| ∀ (p : CPP), sem_eq p [[p]]                                            | by (5), assumption 2, Modus Ponens |
+Then
+
+| | Judgement | Evidence |
+|-|-----------|----------|
+|1| C++-- can't possibly work (i.e. ∀ (p : CPP), p ≇ [[p]])                | Assumption               |
+|2| p1 ≇ [[p1]] → (p1 ≅ [[p1]] → ∀ (p : CPP), p ≅ [[p]])                 | by Principal of Explosion |
+|3| p1 ≇ [[p1]]                                                            | by (1) and ∀-elim         |
+|4| p1 ≅ [[p1]] → ∀ (p : CPP), p ≅ [[p]]                                 | by (2), (3), Modus Ponens |
+|5| (∃ (p1 : CPP), p1 ≅ [[p1]]) → ∀ (p : CPP), p ≅ [[p]]                 | by (4) and ∃-elim         |
+|6| (∃ (p : CPP), p ≅ [[p]]) → ∀ (p : CPP), p ≅ [[p]]                    | by (5) and ɑ-equiv        |
+|7| C++-- works for `hello_world.cpp` above (i.e. ∃ (p : CPP), p ≅ [[p]]) | Inspection                |
+|8| ∀ (p : CPP), p ≅ [[p]]                                                | by (6), (7), Modus Ponens |
