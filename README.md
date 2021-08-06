@@ -15,6 +15,8 @@ int main() {
 ```
 
 ```sh
+$ poetry build
+$ pip install dist/cppmm-0.1.0-py3-none-any.whl
 $ c++-- main.cpp -o main.c
 $ gcc main.c -o main -lstdc++
 $ ./main
